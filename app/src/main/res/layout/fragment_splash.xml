@@ -7,9 +7,18 @@
     android:gravity="center"
     tools:context=".fragments.SplashFragment">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="200dp"
+        android:maxHeight="200dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/christian_sunday_italic"
         android:textSize="38dp"
         android:text="FakeInsta" />
 

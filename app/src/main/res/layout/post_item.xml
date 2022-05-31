@@ -9,17 +9,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingBottom="2dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="4dp"
-            android:src="@drawable/cat_profile"/>
+            android:src="@drawable/cat_profile" />
 
         <TextView
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             tools:text ="Anonymous user"/>
 
     </LinearLayout>
@@ -30,5 +34,36 @@
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
         android:src="@drawable/cat_image"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="4dp"
+        android:paddingLeft="3dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="30dp"
+            android:minWidth="30dp"
+            android:src="@drawable/heart_outline" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="30dp"
+            android:minWidth="30dp"
+            android:layout_marginLeft="6dp"
+            android:src="@drawable/comment_outline" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel pretium dolor, id hendrerit massa. Proin vitae leo libero. Etiam." />
 
 </LinearLayout>

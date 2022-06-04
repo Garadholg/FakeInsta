@@ -1,7 +1,11 @@
 package com.amaurov.fakeinsta.adapters
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.amaurov.fakeinsta.databinding.PostItemBinding
@@ -28,7 +32,23 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
     inner class ViewHolder(private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(holder: ViewHolder, post: PostViewModel) {
             binding.username.text = post.username
-            binding.caption.text = post.caption
+            binding.caption.text = createCaptionText(post.username, post.caption)
+
+            createHashtags()
+        }
+
+        private fun createCaptionText(username: String, caption: String) : SpannableStringBuilder {
+            val ssb = SpannableStringBuilder()
+            val sUsername = SpannableString(username)
+            sUsername.setSpan(StyleSpan(Typeface.BOLD), 0, sUsername.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            ssb.append(sUsername)
+            ssb.append(" $caption")
+
+            return ssb
+        }
+
+        private fun createHashtags() {
+
         }
     }
 }

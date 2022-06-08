@@ -14,8 +14,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.marginLeft
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.databinding.PostItemBinding
+import com.amaurov.fakeinsta.fragments.HomeFragmentDirections
 import com.amaurov.fakeinsta.viewmodels.PostViewModel
 
 class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : RecyclerView.Adapter<PostsRecyclerViewAdapter.ViewHolder>() {
@@ -42,6 +45,9 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
             binding.caption.text = createCaptionText(post.username, post.caption)
 
             createHashtags(post.hashtags)
+            binding.ivLiked.setOnClickListener {
+                onLikePressed(post)
+            }
         }
 
         private fun createCaptionText(username: String, caption: String) : SpannableStringBuilder {
@@ -56,9 +62,9 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
 
         private fun createHashtags(hashtags: List<String>) {
             for (hashtag in hashtags) {
-                var hashtagText = TextView(context)
-                hashtagText.text = hashtag
-                hashtagText.setTextColor(Color.BLUE)
+                var hashtagTextView = TextView(context)
+                hashtagTextView.text = hashtag
+                hashtagTextView.setTextColor(Color.BLUE)
 
                 if (hashtags.indexOf(hashtag) != 0) {
                     var layoutParams = LinearLayout.LayoutParams(
@@ -66,11 +72,28 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
                     layoutParams.setMargins(5, 0, 0, 0)
-                    hashtagText.layoutParams = layoutParams
+                    hashtagTextView.layoutParams = layoutParams
                 }
 
-                binding.hashtagContainer.addView(hashtagText);
+                hashtagTextView.setOnClickListener {
+                    onHashtagClickedEvent(it as TextView)
+                }
+
+                binding.hashtagContainer.addView(hashtagTextView);
             }
+        }
+
+        private fun onHashtagClickedEvent(tv : TextView) {
+            val action = HomeFragmentDirections.actionHomeToHashtagPostResults(tv.text.toString())
+            tv.findNavController()?.navigate(action)
+        }
+
+        private fun onLikePressed(post: PostViewModel) {
+            post.isLiked = !post.isLiked
+
+            if (post.isLiked)
+                binding.ivLiked.setImageResource(R.drawable.heart)
+            else binding.ivLiked.setImageResource(R.drawable.heart_outline)
         }
     }
 }

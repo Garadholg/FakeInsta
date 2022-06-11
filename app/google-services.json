@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "448417814140",
+    "project_id": "fakeinsta-63860",
+    "storage_bucket": "fakeinsta-63860.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448417814140:android:0c8fbf0b7f385923ccdbf9",
+        "android_client_info": {
+          "package_name": "com.amaurov.fakeinsta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448417814140-78ep7a7v2nvshhpfu4s6rlbk8dh9j6h4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amaurov.fakeinsta",
+            "certificate_hash": "42992a624cfdc9961508b4bac506fffba787cc80"
+          }
+        },
+        {
+          "client_id": "448417814140-mg7klaoh59gprsad3cb16u1r8s1nalbg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAborgoAOhtA56RHsuOhdZ5ibW51qExw0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448417814140-mg7klaoh59gprsad3cb16u1r8s1nalbg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

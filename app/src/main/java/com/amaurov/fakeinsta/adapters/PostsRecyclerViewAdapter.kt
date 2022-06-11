@@ -41,8 +41,8 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
 
     inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(holder: ViewHolder, post: PostViewModel) {
-            binding.username.text = post.username
-            binding.caption.text = createCaptionText(post.username, post.caption)
+            binding.tvUsername.text = post.username
+            binding.tvCaption.text = createCaptionText(post.username, post.caption)
 
             createHashtags(post.hashtags)
             binding.ivLiked.setOnClickListener {
@@ -79,7 +79,7 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
                     onHashtagClickedEvent(it as TextView)
                 }
 
-                binding.hashtagContainer.addView(hashtagTextView);
+                binding.llHashtagContainer.addView(hashtagTextView);
             }
         }
 

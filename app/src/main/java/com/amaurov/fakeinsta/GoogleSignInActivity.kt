@@ -1,7 +1,6 @@
 package com.amaurov.fakeinsta
 
 import android.content.ContentValues
-import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log

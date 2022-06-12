@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -13,21 +15,20 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 
 class GoogleSignInActivity : AppCompatActivity() {
-    private val REQ_ONE_TAP = 101
     private var showOneTapUI = true
     private lateinit var oneTapClient: SignInClient
     private lateinit var signUpRequest: BeginSignInRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.id.loginFragment)
+        setContentView(R.layout.activity_main)
 
         oneTapClient = Identity.getSignInClient(this)
         signUpRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
-                    .setServerClientId("290542329001-o38o8ra1tu6fqp0fvbjvfvdi6979fv59.apps.googleusercontent.com")
+                    .setServerClientId("7160607213-7ikb5o5crabfpgr7t6lm42vqsukhi1bn.apps.googleusercontent.com")
                     .setFilterByAuthorizedAccounts(false)
                     .build())
             .build()
@@ -35,9 +36,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         oneTapClient.beginSignIn(signUpRequest)
             .addOnSuccessListener(this) { result ->
                 try {
-                    startIntentSenderForResult(
-                        result.pendingIntent.intentSender, REQ_ONE_TAP,
-                        null, 0, 0, 0)
+                    loginResultHandler.launch(IntentSenderRequest.Builder(result.pendingIntent.intentSender).build())
                 } catch (e: IntentSender.SendIntentException) {
                     Log.e(ContentValues.TAG, "Cannot start OneTap UI, no Google acc on device")
                 }
@@ -47,13 +46,12 @@ class GoogleSignInActivity : AppCompatActivity() {
             }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            REQ_ONE_TAP -> {
+    private val loginResultHandler = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        when (result.resultCode) {
+            RESULT_OK -> {
                 try {
-                    val credential = oneTapClient.getSignInCredentialFromIntent(data)
+                    val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
                     val idToken = credential.googleIdToken
                     when {
                         idToken != null -> {

@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "448417814140",
-    "project_id": "fakeinsta-63860",
-    "storage_bucket": "fakeinsta-63860.appspot.com"
+    "project_number": "290542329001",
+    "project_id": "fakeinsta-66ca6",
+    "storage_bucket": "fakeinsta-66ca6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:448417814140:android:0c8fbf0b7f385923ccdbf9",
+        "mobilesdk_app_id": "1:290542329001:android:60981bb09a47f5fdb89db8",
         "android_client_info": {
           "package_name": "com.amaurov.fakeinsta"
         }
       },
       "oauth_client": [
         {
-          "client_id": "448417814140-78ep7a7v2nvshhpfu4s6rlbk8dh9j6h4.apps.googleusercontent.com",
+          "client_id": "290542329001-cnmc2no1ta1eic4svnhoqg84edrvmjri.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.amaurov.fakeinsta",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "448417814140-mg7klaoh59gprsad3cb16u1r8s1nalbg.apps.googleusercontent.com",
+          "client_id": "290542329001-o38o8ra1tu6fqp0fvbjvfvdi6979fv59.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAborgoAOhtA56RHsuOhdZ5ibW51qExw0o"
+          "current_key": "AIzaSyBcvY4N7i-YhUirIr8V0-DMa_lFzgGKQVE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "448417814140-mg7klaoh59gprsad3cb16u1r8s1nalbg.apps.googleusercontent.com",
+              "client_id": "290542329001-o38o8ra1tu6fqp0fvbjvfvdi6979fv59.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

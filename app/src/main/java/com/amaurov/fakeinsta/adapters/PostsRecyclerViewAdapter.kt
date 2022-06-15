@@ -32,7 +32,7 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(holder, postList[position])
+        holder.bind(postList[position])
     }
 
     override fun getItemCount(): Int {
@@ -40,7 +40,7 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
     }
 
     inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(holder: ViewHolder, post: PostViewModel) {
+        fun bind(post: PostViewModel) {
             binding.tvUsername.text = post.username
             binding.tvCaption.text = createCaptionText(post.username, post.caption)
 
@@ -85,7 +85,7 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
 
         private fun onHashtagClickedEvent(tv : TextView) {
             val action = HomeFragmentDirections.actionHomeToHashtagPostResults(tv.text.toString())
-            tv.findNavController()?.navigate(action)
+            tv.findNavController().navigate(action)
         }
 
         private fun onLikePressed(post: PostViewModel) {

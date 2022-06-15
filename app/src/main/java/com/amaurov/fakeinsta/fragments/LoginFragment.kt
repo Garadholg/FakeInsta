@@ -1,19 +1,18 @@
 package com.amaurov.fakeinsta.fragments
 
 import android.content.ContentValues
-import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.databinding.FragmentLoginBinding
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -21,11 +20,9 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
-import com.google.android.gms.common.api.UnsupportedApiCallException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
 
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -51,8 +48,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        binding.tvRegistration.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_login_to_registration)
+        }
+
         binding.btnLogin.setOnClickListener {
-            loginUser()
+            startEmailSignIn()
         }
 
         binding.btnGoogleLogin.setOnClickListener() {
@@ -60,24 +61,13 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun loginUser() {
-        auth.signInWithEmailAndPassword(binding.etUsername.text.toString(), binding.etPassword.text.toString())
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    binding.testLogin.text = "Login successful"
+    private fun startEmailSignIn() {
+        auth.signInWithEmailAndPassword(binding.tfUsername.editText?.text.toString(), binding.tfPassword.editText?.text.toString())
+            .addOnCompleteListener(requireActivity()) { result ->
+                if (result.isSuccessful) {
+                    view?.findNavController()?.popBackStack()
                 } else {
-                    binding.testLogin.text = "Login failed"
-                }
-            }
-    }
-
-    private fun registerUser() {
-        auth.createUserWithEmailAndPassword("amaurov@mail.com", "123456")
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    println("createUserWithEmail:success")
-                } else {
-                    println("createUserWithEmail:failure")
+                    TODO("Display error message")
                 }
             }
     }
@@ -96,23 +86,23 @@ class LoginFragment : Fragment() {
         oneTapClient.beginSignIn(signUpRequest)
             .addOnSuccessListener(requireActivity()) { result ->
                 try {
-                    loginResultHandler.launch(IntentSenderRequest.Builder(result.pendingIntent.intentSender).build())
+                    googleSignInResultHandler.launch(IntentSenderRequest.Builder(result.pendingIntent.intentSender).build())
                 } catch (e: IntentSender.SendIntentException) {
                     Log.e(ContentValues.TAG, "Cannot start OneTap UI, no Google acc on device")
                 }
             }
             .addOnFailureListener(requireActivity()) { e ->
-                Log.d(ContentValues.TAG, e.localizedMessage)
+                e.localizedMessage?.let { Log.d(ContentValues.TAG, it) }
             }
     }
 
-    private val loginResultHandler = registerForActivityResult(
+    private val googleSignInResultHandler = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()) { result ->
         when (result.resultCode) {
             AppCompatActivity.RESULT_OK -> {
                 try {
-                    val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
-                    val idToken = credential.googleIdToken
+                    val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
+                    val idToken = googleCredential.googleIdToken
                     when {
                         idToken != null -> {
                             // Got an ID token from Google. Use it to authenticate
@@ -127,13 +117,11 @@ class LoginFragment : Fragment() {
                 } catch (e: ApiException) {
                     when (e.statusCode) {
                         CommonStatusCodes.CANCELED -> {
-                            Log.d(ContentValues.TAG, "One-tap dialog was closed.")
-                            // Don't re-prompt the user.
                             showOneTapUI = false
                         }
                         CommonStatusCodes.NETWORK_ERROR -> {
-                            Log.d(ContentValues.TAG, "One-tap encountered a network error.")
-                            // Try again or just ignore.
+                            val toast = Toast.makeText(context, "No Internet Connection!", Toast.LENGTH_LONG)
+                            toast.show()
                         }
                         else -> {
                             Log.d(

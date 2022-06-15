@@ -3,36 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/splash">
 
     <fragment
-        android:id="@+id/splashFragment"
+        android:id="@+id/splash"
         android:name="com.amaurov.fakeinsta.fragments.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_splash_to_main"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/splashFragment"
+            app:destination="@id/main"
+            app:popUpTo="@id/splash"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/main"
         android:name="com.amaurov.fakeinsta.fragments.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.amaurov.fakeinsta.fragments.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_login_to_googleSignIn"
-            app:destination="@id/googleSignInActivity" />
+            android:id="@+id/action_main_to_signIn"
+            app:destination="@id/signIn" />
     </fragment>
-    <activity
-        android:id="@+id/googleSignInActivity"
-        android:name="com.amaurov.fakeinsta.GoogleSignInActivity"
-        android:label="activity_google_sign_in"
-        tools:layout="@layout/activity_google_sign_in" />
+    <navigation android:id="@+id/signIn"
+        app:startDestination="@id/loginFragment">
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.amaurov.fakeinsta.fragments.LoginFragment"
+            android:label="fragment_login"
+            tools:layout="@layout/fragment_login">
+            <action
+                android:id="@+id/action_login_to_registration"
+                app:destination="@id/registrationFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/registrationFragment"
+            android:name="com.amaurov.fakeinsta.fragments.RegistrationFragment"
+            android:label="fragment_registration"
+            tools:layout="@layout/fragment_registration">
+            <action
+                android:id="@+id/action_registration_to_login"
+                app:destination="@id/loginFragment"
+                app:popUpTo="@id/loginFragment"
+                app:popUpToInclusive="true" />
+        </fragment>
+    </navigation>
 </navigation>

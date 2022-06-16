@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -28,6 +29,7 @@ class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private var showOneTapUI = true
     private lateinit var oneTapClient: SignInClient
+    private lateinit var signInRequest: BeginSignInRequest
     private lateinit var signUpRequest: BeginSignInRequest
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -35,7 +37,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -56,7 +58,7 @@ class LoginFragment : Fragment() {
             startEmailSignIn()
         }
 
-        binding.btnGoogleLogin.setOnClickListener() {
+        binding.btnGoogleLogin.setOnClickListener {
             startGoogleSignIn()
         }
     }
@@ -67,18 +69,39 @@ class LoginFragment : Fragment() {
                 if (result.isSuccessful) {
                     view?.findNavController()?.popBackStack()
                 } else {
-                    TODO("Display error message")
+                    // TODO("Display error message")
                 }
             }
     }
 
     private fun startGoogleSignIn() {
         oneTapClient = Identity.getSignInClient(requireActivity())
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId("290542329001-o38o8ra1tu6fqp0fvbjvfvdi6979fv59.apps.googleusercontent.com")
+                    .setFilterByAuthorizedAccounts(true)
+                    .build()
+            )
+            .build()
+
+        oneTapClient.beginSignIn(signInRequest)
+            .addOnSuccessListener(requireActivity()) { result ->
+                googleSignInResultHandler.launch(IntentSenderRequest.Builder(result.pendingIntent.intentSender).build())
+            }
+            .addOnFailureListener(requireActivity()) { e ->
+                e.localizedMessage?.let { Log.d(ContentValues.TAG, it) }
+                startGoogleSignUp()
+            }
+    }
+
+    private fun startGoogleSignUp() {
         signUpRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
-                    .setServerClientId("7160607213-7ikb5o5crabfpgr7t6lm42vqsukhi1bn.apps.googleusercontent.com")
+                    .setServerClientId("290542329001-o38o8ra1tu6fqp0fvbjvfvdi6979fv59.apps.googleusercontent.com")
                     .setFilterByAuthorizedAccounts(false)
                     .build())
             .build()
@@ -88,7 +111,7 @@ class LoginFragment : Fragment() {
                 try {
                     googleSignInResultHandler.launch(IntentSenderRequest.Builder(result.pendingIntent.intentSender).build())
                 } catch (e: IntentSender.SendIntentException) {
-                    Log.e(ContentValues.TAG, "Cannot start OneTap UI, no Google acc on device")
+                    Log.d(ContentValues.TAG, "Cannot start OneTap UI, no Google acc on device")
                 }
             }
             .addOnFailureListener(requireActivity()) { e ->
@@ -106,7 +129,18 @@ class LoginFragment : Fragment() {
                     when {
                         idToken != null -> {
                             // Got an ID token from Google. Use it to authenticate
-                            // with your backend.
+                            // with Firebase.
+                            val firebaseCredentials = GoogleAuthProvider.getCredential(idToken, null)
+                            auth.signInWithCredential(firebaseCredentials)
+                                .addOnCompleteListener(requireActivity()) { task ->
+                                    if (task.isSuccessful) {
+                                        Log.d(ContentValues.TAG, "Auth successful")
+                                        view?.findNavController()?.popBackStack()
+                                    }
+                                    else {
+                                        // TODO("Display an error message")
+                                    }
+                                }
                             Log.d(ContentValues.TAG, "Got ID token.")
                         }
                         else -> {

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "290542329001",
+    "firebase_url": "https://fakeinsta-66ca6-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "fakeinsta-66ca6",
     "storage_bucket": "fakeinsta-66ca6.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "290542329001-7k4ntq1ng26m0mmro80m60jnd0nsubf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amaurov.fakeinsta",
+            "certificate_hash": "b0025d282670049d889dd3120df2adef954df2fa"
+          }
+        },
         {
           "client_id": "290542329001-cnmc2no1ta1eic4svnhoqg84edrvmjri.apps.googleusercontent.com",
           "client_type": 1,

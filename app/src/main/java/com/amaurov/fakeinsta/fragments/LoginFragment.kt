@@ -22,6 +22,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -54,17 +55,21 @@ class LoginFragment : Fragment() {
             view?.findNavController()?.navigate(R.id.action_login_to_registration)
         }
 
-        binding.btnLogin.setOnClickListener {
+        binding.btnUsernameSignIn.setOnClickListener {
             startEmailSignIn()
         }
 
-        binding.btnGoogleLogin.setOnClickListener {
+        binding.btnGoogleSignIn.setOnClickListener {
             startGoogleSignIn()
+        }
+
+        binding.btnGithubSignIn.setOnClickListener {
+            startGithubSingIn()
         }
     }
 
     private fun startEmailSignIn() {
-        auth.signInWithEmailAndPassword(binding.tfUsername.editText?.text.toString(), binding.tfPassword.editText?.text.toString())
+        auth.signInWithEmailAndPassword(binding.tfEmail.editText?.text.toString(), binding.tfPassword.editText?.text.toString())
             .addOnCompleteListener(requireActivity()) { result ->
                 if (result.isSuccessful) {
                     view?.findNavController()?.popBackStack()
@@ -128,8 +133,6 @@ class LoginFragment : Fragment() {
                     val idToken = googleCredential.googleIdToken
                     when {
                         idToken != null -> {
-                            // Got an ID token from Google. Use it to authenticate
-                            // with Firebase.
                             val firebaseCredentials = GoogleAuthProvider.getCredential(idToken, null)
                             auth.signInWithCredential(firebaseCredentials)
                                 .addOnCompleteListener(requireActivity()) { task ->
@@ -168,4 +171,29 @@ class LoginFragment : Fragment() {
             }
         }
     }
+
+    private fun startGithubSingIn() {
+        var provider = OAuthProvider.newBuilder("github.com")
+        val pendingResultTask = auth.pendingAuthResult
+
+        if (pendingResultTask != null) {
+            pendingResultTask
+                .addOnSuccessListener {
+                    view?.findNavController()?.popBackStack()
+                }
+                .addOnFailureListener {
+                    // TODO("Handle errors")
+                }
+        } else {
+            auth.startActivityForSignInWithProvider(requireActivity(), provider.build())
+                .addOnSuccessListener {
+                    view?.findNavController()?.popBackStack()
+                }
+                .addOnFailureListener {
+                    // TODO("Handle errors)
+                }
+        }
+    }
+
+
 }

@@ -26,4 +26,9 @@ class HashtagPostResultsFragment : Fragment() {
 
         binding.tvHashtag.text = args.hashtag
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

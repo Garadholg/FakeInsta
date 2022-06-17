@@ -5,16 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.databinding.FragmentRegistrationBinding
-import com.amaurov.fakeinsta.viewmodels.UserData
+import com.amaurov.fakeinsta.dao.models.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.ktx.Firebase
 
 class RegistrationFragment : Fragment() {
@@ -109,5 +106,10 @@ class RegistrationFragment : Fragment() {
             val ex = e.localizedMessage
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

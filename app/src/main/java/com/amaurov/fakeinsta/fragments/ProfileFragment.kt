@@ -38,4 +38,9 @@ class ProfileFragment : Fragment() {
             Firebase.auth.signOut()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

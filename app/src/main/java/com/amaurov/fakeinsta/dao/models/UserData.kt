@@ -1,4 +1,4 @@
-package com.amaurov.fakeinsta.viewmodels
+package com.amaurov.fakeinsta.dao.models
 
 data class UserData(
     val username: String,

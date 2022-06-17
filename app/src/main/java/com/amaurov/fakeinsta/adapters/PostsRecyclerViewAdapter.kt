@@ -41,10 +41,10 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
 
     inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: PostViewModel) {
-            binding.tvUsername.text = post.username
-            binding.tvCaption.text = createCaptionText(post.username, post.caption)
+            //binding.tvUsername.text = post.username
+            //binding.tvCaption.text = createCaptionText(post.username, post.caption)
 
-            createHashtags(post.hashtags)
+            //createHashtags(post.hashtags)
             binding.ivLiked.setOnClickListener {
                 onLikePressed(post)
             }
@@ -89,11 +89,11 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
         }
 
         private fun onLikePressed(post: PostViewModel) {
-            post.isLiked = !post.isLiked
+            //post.isLiked = !post.isLiked
 
-            if (post.isLiked)
-                binding.ivLiked.setImageResource(R.drawable.heart)
-            else binding.ivLiked.setImageResource(R.drawable.heart_outline)
+            //if (post.isLiked)
+            //    binding.ivLiked.setImageResource(R.drawable.heart)
+            //else binding.ivLiked.setImageResource(R.drawable.heart_outline)
         }
     }
 }

@@ -1,13 +1,14 @@
 package com.amaurov.fakeinsta.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import com.amaurov.fakeinsta.dao.responses.implementations.PostsRepositoryImpl
-import com.amaurov.fakeinsta.dao.responses.interfaces.FirebaseCallback
+import kotlinx.coroutines.Dispatchers
 
 class PostViewModel(
  private val repository: PostsRepositoryImpl = PostsRepositoryImpl()
 ): ViewModel() {
- fun getResponse(callback: FirebaseCallback) {
-  repository.getPosts(callback)
+ val responseLiveData = liveData(Dispatchers.IO) {
+  emit(repository.getPosts())
  }
 }

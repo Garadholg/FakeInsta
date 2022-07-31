@@ -1,21 +1,28 @@
 package com.amaurov.fakeinsta.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.amaurov.fakeinsta.R
-import com.amaurov.fakeinsta.databinding.FragmentRegistrationBinding
 import com.amaurov.fakeinsta.dao.models.UserData
+import com.amaurov.fakeinsta.dao.repositories.implementations.UserDataRepositoryImpl
+import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
+import com.amaurov.fakeinsta.dao.utils.Auth
+import com.amaurov.fakeinsta.dao.utils.GenericCallback
+import com.amaurov.fakeinsta.databinding.FragmentRegistrationBinding
+import com.amaurov.fakeinsta.viewmodels.UserDataViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.runBlocking
 
 class RegistrationFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
+    private val userDataVM = UserDataViewModel()
+
     private var _binding: FragmentRegistrationBinding? = null
     private val binding get() = _binding!!
 
@@ -72,38 +79,55 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun startEmailSignUp(email: String, password: String) {
-        var result = false
-
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) {
                 if (it.isSuccessful) saveUserData(email)
             }
             .addOnFailureListener(requireActivity()) {
-                val e = it.localizedMessage
+                it.localizedMessage
             }
     }
 
     private fun saveUserData(email: String) {
         val userData = UserData(
+            auth.currentUser!!.uid,
             binding.tfUsername.editText?.text.toString(),
             email,
             getCheckedSubscription()
         )
 
         try {
-            val firebaseDatabase = Firebase.database.reference
-            val databaseReference = firebaseDatabase.child("UserData")
+//            val firebaseDatabase = Firebase.database.reference
+//            val databaseReference = firebaseDatabase.child("UserData")
+//
+//            databaseReference
+//                .child(auth.currentUser!!.uid).setValue(userData)
+//                .addOnCompleteListener(requireActivity()) {
+//                    Auth.currentUser = userData
+//                    view?.findNavController()?.popBackStack(R.id.loginFragment, true)
+//                }
+//                .addOnFailureListener(requireActivity()) {
+//                    var e = it.localizedMessage
+//                }
 
-            databaseReference
-                .child(auth.currentUser!!.uid).setValue(userData)
-                .addOnCompleteListener(requireActivity()) {
+//            runBlocking {
+//                val response = userDataRepository.createUserData(userData)
+//                if (response.data != null) {
+//                    Auth.currentUser = userData
+//                    view?.findNavController()?.popBackStack(R.id.loginFragment, true)
+//                }
+//            }
+//            userDataVM.createUser(userData)
+
+            userDataVM.createUser(userData, object: GenericCallback<UserData> {
+                override fun onCallback(value: FirebaseResponse<UserData>) {
+                    Auth.currentUser = value.data?.get(0)
                     view?.findNavController()?.popBackStack(R.id.loginFragment, true)
                 }
-                .addOnFailureListener(requireActivity()) {
-                    var e = it.localizedMessage
-                }
+            })
+
         } catch (e: Exception) {
-            val ex = e.localizedMessage
+            e.localizedMessage
         }
 
     }

@@ -3,7 +3,6 @@ package com.amaurov.fakeinsta.adapters
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.text.Layout
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -12,18 +11,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.compose.ui.unit.dp
-import androidx.core.view.marginLeft
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.amaurov.fakeinsta.R
+import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.databinding.PostItemBinding
+import com.amaurov.fakeinsta.fragments.HomeFragment
 import com.amaurov.fakeinsta.fragments.HomeFragmentDirections
-import com.amaurov.fakeinsta.viewmodels.PostViewModel
 
-class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : RecyclerView.Adapter<PostsRecyclerViewAdapter.ViewHolder>() {
+class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.ViewHolder>() {
     private var _binding: PostItemBinding? = null
     private val binding get() = _binding!!
+
+    private var postList: List<Post> = emptyList()
+    //TODO("Testing like event shenanigans, delete later)
+    var likeEvent: () -> Unit? = { }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -39,18 +42,28 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
         return postList.size
     }
 
-    inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(post: PostViewModel) {
-            //binding.tvUsername.text = post.username
-            //binding.tvCaption.text = createCaptionText(post.username, post.caption)
+    fun updatePosts(data: List<Post>) {
+        postList = data
+        notifyDataSetChanged()
+    }
 
-            //createHashtags(post.hashtags)
+    inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(post: Post) {
+            binding.tvUsername.text = post.userName
+            binding.tvCaption.text = createCaptionText(post.userName, post.caption)
+
+            createHashtags(post.hashtags)
+
+            if (post.likes.contains("FVcsqhGBhkXbYVvUyv8ysxtHva73"))
+                binding.ivLiked.setImageResource(R.drawable.heart)
+            else binding.ivLiked.setImageResource(R.drawable.heart_outline)
+
             binding.ivLiked.setOnClickListener {
                 onLikePressed(post)
             }
         }
 
-        private fun createCaptionText(username: String, caption: String) : SpannableStringBuilder {
+        private fun createCaptionText(username: String?, caption: String?) : SpannableStringBuilder {
             val ssb = SpannableStringBuilder()
             val sUsername = SpannableString(username)
             sUsername.setSpan(StyleSpan(Typeface.BOLD), 0, sUsername.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -60,26 +73,24 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
             return ssb
         }
 
-        private fun createHashtags(hashtags: List<String>) {
+        private fun createHashtags(hashtags: HashMap<String, Int>) {
             for (hashtag in hashtags) {
-                var hashtagTextView = TextView(context)
-                hashtagTextView.text = hashtag
+                val hashtagTextView = TextView(context)
+                """#${hashtag.key}""".also { hashtagTextView.text = it }
                 hashtagTextView.setTextColor(Color.BLUE)
 
-                if (hashtags.indexOf(hashtag) != 0) {
-                    var layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    layoutParams.setMargins(5, 0, 0, 0)
-                    hashtagTextView.layoutParams = layoutParams
-                }
+                val layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams.setMargins(0, 0, 5, 0)
+                hashtagTextView.layoutParams = layoutParams
 
                 hashtagTextView.setOnClickListener {
                     onHashtagClickedEvent(it as TextView)
                 }
 
-                binding.llHashtagContainer.addView(hashtagTextView);
+                binding.llHashtagContainer.addView(hashtagTextView)
             }
         }
 
@@ -88,12 +99,14 @@ class PostsRecyclerViewAdapter(private val postList: List<PostViewModel>) : Recy
             tv.findNavController().navigate(action)
         }
 
-        private fun onLikePressed(post: PostViewModel) {
-            //post.isLiked = !post.isLiked
-
-            //if (post.isLiked)
-            //    binding.ivLiked.setImageResource(R.drawable.heart)
-            //else binding.ivLiked.setImageResource(R.drawable.heart_outline)
+        private fun onLikePressed(post: Post) {
+            if (!post.likes.contains("FVcsqhGBhkXbYVvUyv8ysxtHva73")) {
+                likeEvent()
+                binding.ivLiked.setImageResource(R.drawable.heart)
+            } else {
+                //TODO("Remove user ID to post likes list in FireBase")
+                binding.ivLiked.setImageResource(R.drawable.heart_outline)
+            }
         }
     }
 }

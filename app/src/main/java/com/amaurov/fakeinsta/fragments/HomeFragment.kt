@@ -1,7 +1,6 @@
 package com.amaurov.fakeinsta.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaurov.fakeinsta.adapters.PostsRecyclerViewAdapter
-import com.amaurov.fakeinsta.dao.responses.Response
-import com.amaurov.fakeinsta.dao.responses.interfaces.FirebaseCallback
 import com.amaurov.fakeinsta.databinding.FragmentHomeBinding
 import com.amaurov.fakeinsta.viewmodels.PostViewModel
 
@@ -33,14 +30,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this).get(PostViewModel::class.java)
-        getResponse()
-        //bindRepeater()
+        getData()
+        bindRepeater()
     }
 
     private fun bindRepeater() {
         rvPosts = binding.rvPosts
         rvPosts.layoutManager = LinearLayoutManager(this.context)
-        //rvAdapter = PostsRecyclerViewAdapter(postList)
+        rvAdapter = PostsRecyclerViewAdapter()
+        rvAdapter.likeEvent = onPostLiked
         rvPosts.adapter = rvAdapter
     }
 
@@ -49,29 +47,15 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    // FIREBASE + MVVM SHENANIGANS
-    // REF URL: https://medium.com/firebase-tips-tricks/how-to-read-data-from-firebase-realtime-database-using-get-269ef3e179c5
-    // TODO("Delete when not necessary")
-
-    private fun print(response: Response) {
-        response.posts?.let { posts ->
-            posts.forEach { post ->
-                post.caption?.let {
-                    Log.i("TAG", it)
-                }
-            }
-        }
-
-        response.exception?.let { e ->
-            e.message?.let {
-                Log.d("EXCEPTION", it)
+    private fun getData() {
+        viewModel.responseLiveData.observe(viewLifecycleOwner) {
+            it.data?.let { posts ->
+                rvAdapter.updatePosts(posts)
             }
         }
     }
 
-    private fun getResponse() {
-        viewModel.responseLiveData.observe(viewLifecycleOwner) {
-            print(it)
-        }
+    private val onPostLiked : () -> Unit = {
+        viewModel.updateLikes()
     }
 }

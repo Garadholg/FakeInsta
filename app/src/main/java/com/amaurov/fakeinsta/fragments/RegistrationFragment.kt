@@ -97,31 +97,9 @@ class RegistrationFragment : Fragment() {
         )
 
         try {
-//            val firebaseDatabase = Firebase.database.reference
-//            val databaseReference = firebaseDatabase.child("UserData")
-//
-//            databaseReference
-//                .child(auth.currentUser!!.uid).setValue(userData)
-//                .addOnCompleteListener(requireActivity()) {
-//                    Auth.currentUser = userData
-//                    view?.findNavController()?.popBackStack(R.id.loginFragment, true)
-//                }
-//                .addOnFailureListener(requireActivity()) {
-//                    var e = it.localizedMessage
-//                }
-
-//            runBlocking {
-//                val response = userDataRepository.createUserData(userData)
-//                if (response.data != null) {
-//                    Auth.currentUser = userData
-//                    view?.findNavController()?.popBackStack(R.id.loginFragment, true)
-//                }
-//            }
-//            userDataVM.createUser(userData)
-
             userDataVM.createUser(userData, object: GenericCallback<UserData> {
-                override fun onCallback(value: FirebaseResponse<UserData>) {
-                    Auth.currentUser = value.data?.get(0)
+                override fun onCallback(response: FirebaseResponse<UserData>) {
+                    Auth.currentUser = response.data?.get(0)
                     view?.findNavController()?.popBackStack(R.id.loginFragment, true)
                 }
             })

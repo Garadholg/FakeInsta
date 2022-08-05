@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.amaurov.fakeinsta.R
-import com.amaurov.fakeinsta.dao.utils.Auth
+import com.amaurov.fakeinsta.utils.Auth
 import com.amaurov.fakeinsta.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

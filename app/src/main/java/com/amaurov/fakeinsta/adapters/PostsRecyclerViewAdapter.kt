@@ -19,6 +19,7 @@ import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.databinding.PostItemBinding
 import com.amaurov.fakeinsta.fragments.HomeFragment
 import com.amaurov.fakeinsta.fragments.HomeFragmentDirections
+import com.amaurov.fakeinsta.utils.Auth
 
 class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.ViewHolder>() {
     private var _binding: PostItemBinding? = null
@@ -26,7 +27,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
 
     private var postList: List<Post> = emptyList()
     //TODO("Testing like event shenanigans, delete later)
-    var likeEvent: () -> Unit? = { }
+    var likeEvent: (post: Post, isLiked: Boolean) -> Unit? = { _: Post, _: Boolean -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -54,7 +55,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
 
             createHashtags(post.hashtags)
 
-            if (post.likes.contains("FVcsqhGBhkXbYVvUyv8ysxtHva73"))
+            if (post.likes.contains(Auth.currentUser?.id))
                 binding.ivLiked.setImageResource(R.drawable.heart)
             else binding.ivLiked.setImageResource(R.drawable.heart_outline)
 
@@ -90,6 +91,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
                     onHashtagClickedEvent(it as TextView)
                 }
 
+                binding.llHashtagContainer.removeAllViews()
                 binding.llHashtagContainer.addView(hashtagTextView)
             }
         }
@@ -100,13 +102,15 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
         }
 
         private fun onLikePressed(post: Post) {
-            if (!post.likes.contains("FVcsqhGBhkXbYVvUyv8ysxtHva73")) {
-                likeEvent()
-                binding.ivLiked.setImageResource(R.drawable.heart)
+            likeEvent(post, post.likes.contains(Auth.currentUser!!.id))
+
+            if (post.likes.contains(Auth.currentUser!!.id)) {
+                post.likes.remove(Auth.currentUser!!.id!!)
             } else {
-                //TODO("Remove user ID to post likes list in FireBase")
-                binding.ivLiked.setImageResource(R.drawable.heart_outline)
+                post.likes[Auth.currentUser!!.id!!] = 1
             }
+
+            notifyDataSetChanged()
         }
     }
 }

@@ -3,9 +3,8 @@ package com.amaurov.fakeinsta.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.amaurov.fakeinsta.dao.repositories.implementations.PostsRepositoryImpl
-import com.amaurov.fakeinsta.dao.utils.GenericCallback
+import com.amaurov.fakeinsta.utils.GenericCallback
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class PostViewModel(
@@ -15,7 +14,7 @@ class PostViewModel(
   emit(repository.getPosts())
  }
 
- fun updateLikes(callback: GenericCallback<Boolean>) = runBlocking {
-  repository.updatePostLikes(callback)
+ fun updateLikes(postId: String, userId: String, isLiked: Boolean, callback: GenericCallback<Boolean>) = runBlocking {
+  repository.updatePostLikes(postId, userId, isLiked, callback)
  }
 }

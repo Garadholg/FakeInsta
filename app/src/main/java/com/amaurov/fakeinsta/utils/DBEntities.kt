@@ -1,4 +1,4 @@
-package com.amaurov.fakeinsta.dao.utils
+package com.amaurov.fakeinsta.utils
 
 object DBEntities {
     const val POSTS_REF = "Posts"

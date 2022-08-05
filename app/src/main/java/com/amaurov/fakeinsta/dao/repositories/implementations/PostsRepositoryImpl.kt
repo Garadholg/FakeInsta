@@ -3,8 +3,8 @@ package com.amaurov.fakeinsta.dao.repositories.implementations
 import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.dao.repositories.interfaces.PostsRepository
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
-import com.amaurov.fakeinsta.dao.utils.DBEntities.POSTS_REF
-import com.amaurov.fakeinsta.dao.utils.GenericCallback
+import com.amaurov.fakeinsta.utils.DBEntities.POSTS_REF
+import com.amaurov.fakeinsta.utils.GenericCallback
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -32,17 +32,23 @@ class PostsRepositoryImpl (
         return response
     }
 
-    override suspend fun updatePostLikes(callback: GenericCallback<Boolean>) {
+    override suspend fun updatePostLikes(postId: String, userId: String, isLiked:Boolean, callback: GenericCallback<Boolean>) {
+        val likeNode = postRef.child(postId).child("likes").child(userId)
+        val response = FirebaseResponse<Boolean>()
 
-        //TODO("Insert real values after testing")
-        val testHM = hashMapOf<String, Int>()
-        testHM["asdkjlasd"] = 1
-
-        postRef.child("2").child("likes").setValue(testHM)
-            .addOnCompleteListener {
-                val response = FirebaseResponse<Boolean>()
-                response.data = listOf(true)
-                callback.onCallback(response)
-            }
+        if (isLiked) {
+            likeNode.removeValue()
+                .addOnCompleteListener {
+                    response.data = listOf(false)
+                    callback.onCallback(response)
+                }
+        }
+        else {
+            likeNode.setValue(1)
+                .addOnCompleteListener {
+                    response.data = listOf(true)
+                    callback.onCallback(response)
+                }
+        }
     }
 }

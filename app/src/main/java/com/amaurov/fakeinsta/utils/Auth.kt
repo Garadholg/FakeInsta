@@ -1,4 +1,4 @@
-package com.amaurov.fakeinsta.dao.utils
+package com.amaurov.fakeinsta.utils
 
 import com.amaurov.fakeinsta.dao.models.UserData
 

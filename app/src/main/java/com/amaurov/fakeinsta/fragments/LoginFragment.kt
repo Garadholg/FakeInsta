@@ -14,7 +14,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.amaurov.fakeinsta.R
+import com.amaurov.fakeinsta.dao.models.UserData
+import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.databinding.FragmentLoginBinding
+import com.amaurov.fakeinsta.utils.Auth
+import com.amaurov.fakeinsta.utils.GenericCallback
+import com.amaurov.fakeinsta.viewmodels.UserDataViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -28,6 +33,8 @@ import com.google.firebase.ktx.Firebase
 
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
+    private val userDataVM = UserDataViewModel()
+
     private var showOneTapUI = true
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
@@ -48,6 +55,11 @@ class LoginFragment : Fragment() {
 
         auth = Firebase.auth
         setupListeners()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun setupListeners() {
@@ -72,7 +84,7 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(binding.tfEmail.editText?.text.toString(), binding.tfPassword.editText?.text.toString())
             .addOnCompleteListener(requireActivity()) { result ->
                 if (result.isSuccessful) {
-                    view?.findNavController()?.popBackStack()
+                    getUserData(auth.currentUser?.uid!!)
                 } else {
                     // TODO("Display error message")
                 }
@@ -138,7 +150,7 @@ class LoginFragment : Fragment() {
                                 .addOnCompleteListener(requireActivity()) { task ->
                                     if (task.isSuccessful) {
                                         Log.d(ContentValues.TAG, "Auth successful")
-                                        view?.findNavController()?.popBackStack()
+                                        createUser()
                                     }
                                     else {
                                         // TODO("Display an error message")
@@ -173,13 +185,13 @@ class LoginFragment : Fragment() {
     }
 
     private fun startGithubSingIn() {
-        var provider = OAuthProvider.newBuilder("github.com")
+        val provider = OAuthProvider.newBuilder("github.com")
         val pendingResultTask = auth.pendingAuthResult
 
         if (pendingResultTask != null) {
             pendingResultTask
                 .addOnSuccessListener {
-                    view?.findNavController()?.popBackStack()
+                    getUserData(auth.currentUser?.uid!!)
                 }
                 .addOnFailureListener {
                     // TODO("Handle errors")
@@ -187,7 +199,7 @@ class LoginFragment : Fragment() {
         } else {
             auth.startActivityForSignInWithProvider(requireActivity(), provider.build())
                 .addOnSuccessListener {
-                    view?.findNavController()?.popBackStack()
+                    createUser()
                 }
                 .addOnFailureListener {
                     // TODO("Handle errors)
@@ -195,8 +207,30 @@ class LoginFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    private fun createUser() {
+        val user = UserData(
+            auth.currentUser?.uid,
+            auth.currentUser?.email?.split("@")?.get(0),
+            auth.currentUser?.email,
+            "Free"
+        )
+
+        userDataVM.createUser(user, object: GenericCallback<UserData> {
+            override fun onCallback(response: FirebaseResponse<UserData>) {
+                Auth.currentUser = response.data?.get(0)
+                view?.findNavController()?.popBackStack()
+            }
+        })
     }
+
+    private fun getUserData(id: String) {
+        userDataVM.getUserById(id, object: GenericCallback<UserData> {
+            override fun onCallback(response: FirebaseResponse<UserData>) {
+                Auth.currentUser = response.data?.get(0)
+                view?.findNavController()?.popBackStack()
+            }
+
+        })
+    }
+
 }

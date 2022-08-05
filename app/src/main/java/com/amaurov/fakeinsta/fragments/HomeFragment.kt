@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaurov.fakeinsta.adapters.PostsRecyclerViewAdapter
+import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
-import com.amaurov.fakeinsta.dao.utils.GenericCallback
+import com.amaurov.fakeinsta.utils.GenericCallback
 import com.amaurov.fakeinsta.databinding.FragmentHomeBinding
+import com.amaurov.fakeinsta.utils.Auth
 import com.amaurov.fakeinsta.viewmodels.PostViewModel
 
 class HomeFragment : Fragment() {
@@ -57,10 +59,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val onPostLiked : () -> Unit = {
-        viewModel.updateLikes(object: GenericCallback<Boolean> {
-            override fun onCallback(value: FirebaseResponse<Boolean>) {
-                //ToDo("change post data in recyclerview")
+    private val onPostLiked : (post: Post, isLiked: Boolean) -> Unit = { post: Post, isLiked: Boolean ->
+        viewModel.updateLikes(post.id!!, Auth.currentUser?.id!!, isLiked, object: GenericCallback<Boolean> {
+            override fun onCallback(response: FirebaseResponse<Boolean>) {
+                //ToDo("Maybe I don't even need a callback...")
             }
 
         })

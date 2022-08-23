@@ -20,6 +20,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: PostViewModel
     private lateinit var rvPosts: RecyclerView
     private lateinit var rvAdapter: PostsRecyclerViewAdapter
+
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -51,6 +52,7 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    // Observer
     private fun getData() {
         viewModel.responseLiveData.observe(viewLifecycleOwner) {
             it.data?.let { posts ->

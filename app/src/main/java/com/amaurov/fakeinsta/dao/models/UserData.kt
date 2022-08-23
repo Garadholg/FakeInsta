@@ -7,5 +7,6 @@ data class UserData(
     var id: String? = null,
     var username: String? = null,
     var email: String? = null,
+    var profilePicture: String? = null,
     var subscriptionType: String? = null
 )

@@ -14,6 +14,18 @@ class PostsRepositoryImpl (
     private val dbRef: DatabaseReference = Firebase.database.reference,
     private val postRef: DatabaseReference = dbRef.child(POSTS_REF)
 ): PostsRepository {
+    override suspend fun createPost(post: Post, callback: GenericCallback<Void>) {
+        try {
+            postRef.push().setValue(post)
+                .addOnCompleteListener {
+                    // Maybe I don't even need a callback
+                    callback.onCallback(FirebaseResponse())
+                }
+        } catch (exception: Exception) {
+            val msg = exception.message
+        }
+    }
+
     override suspend fun getPosts(): FirebaseResponse<Post> {
         val response = FirebaseResponse<Post>()
         try {
@@ -25,7 +37,7 @@ class PostsRepositoryImpl (
                 posts.add(post)
             }
 
-            response.data = posts
+            response.data = posts.reversed()
         } catch (exception: Exception) {
             response.exception = exception
         }

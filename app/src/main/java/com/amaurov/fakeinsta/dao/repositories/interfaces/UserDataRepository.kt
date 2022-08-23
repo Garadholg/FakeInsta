@@ -6,4 +6,5 @@ import com.amaurov.fakeinsta.utils.GenericCallback
 interface UserDataRepository {
     suspend fun createUserData(userData: UserData, callback: GenericCallback<UserData>)
     suspend fun getUserDataByKey(key: String, callback: GenericCallback<UserData>)
+    suspend fun updateUserData(userData: UserData, callback: GenericCallback<UserData>)
 }

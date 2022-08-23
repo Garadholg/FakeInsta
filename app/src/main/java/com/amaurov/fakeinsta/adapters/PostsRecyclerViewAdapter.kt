@@ -11,15 +11,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.databinding.PostItemBinding
-import com.amaurov.fakeinsta.fragments.HomeFragment
 import com.amaurov.fakeinsta.fragments.HomeFragmentDirections
 import com.amaurov.fakeinsta.utils.Auth
+import com.amaurov.fakeinsta.utils.toBitmapImage
 
 class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.ViewHolder>() {
     private var _binding: PostItemBinding? = null
@@ -50,6 +49,9 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
 
     inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
+            binding.ivPicture.setImageBitmap(post.picture!!.toBitmapImage())
+
+            //binding.civPostUserPicture.setImageBitmap()
             binding.tvUsername.text = post.userName
             binding.tvCaption.text = createCaptionText(post.userName, post.caption)
 

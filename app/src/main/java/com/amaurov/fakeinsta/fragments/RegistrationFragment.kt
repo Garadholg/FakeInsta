@@ -12,6 +12,8 @@ import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.utils.Auth
 import com.amaurov.fakeinsta.utils.GenericCallback
 import com.amaurov.fakeinsta.databinding.FragmentRegistrationBinding
+import com.amaurov.fakeinsta.utils.hideKeyboard
+import com.amaurov.fakeinsta.utils.toBase64String
 import com.amaurov.fakeinsta.viewmodels.UserDataViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -51,6 +53,8 @@ class RegistrationFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
+            requireContext().hideKeyboard(it)
+
             val username = binding.tfUsername.editText?.text.toString()
             val email = binding.tfEmail.editText?.text.toString()
             val password = binding.tfPassword.editText?.text.toString()
@@ -91,6 +95,7 @@ class RegistrationFragment : Fragment() {
             auth.currentUser!!.uid,
             binding.tfUsername.editText?.text.toString(),
             email,
+            resources.getDrawable(R.drawable.cat_image, context?.theme).toBase64String(),
             getCheckedSubscription()
         )
 

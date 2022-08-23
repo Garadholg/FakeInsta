@@ -33,4 +33,9 @@
             android:name="hashtag"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/addPostFragment"
+        android:name="com.amaurov.fakeinsta.fragments.AddPostFragment"
+        android:label="fragment_add_post"
+        tools:layout="@layout/fragment_add_post" />
 </navigation>

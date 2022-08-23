@@ -1,24 +1,29 @@
 package com.amaurov.fakeinsta.fragments
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.dao.models.UserData
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.databinding.FragmentLoginBinding
 import com.amaurov.fakeinsta.utils.Auth
 import com.amaurov.fakeinsta.utils.GenericCallback
+import com.amaurov.fakeinsta.utils.hideKeyboard
 import com.amaurov.fakeinsta.viewmodels.UserDataViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -30,6 +35,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+
 
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -68,6 +74,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnUsernameSignIn.setOnClickListener {
+            requireContext().hideKeyboard(it)
             startEmailSignIn()
         }
 

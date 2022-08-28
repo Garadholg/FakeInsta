@@ -80,9 +80,9 @@ class ProfileFragment : Fragment() {
             requireContext().hideKeyboard(it)
             
             val userData = getUpdatedUserData()
-            userDataVM.updateUser(userData, object: GenericCallback<UserData> {
-                override fun onCallback(response: FirebaseResponse<UserData>) {
-                    Auth.currentUser = response.data!![0]
+            userDataVM.updateUser(userData, object: GenericCallback<Boolean> {
+                override fun onCallback(response: FirebaseResponse<Boolean>) {
+                    Auth.currentUser = if (response.data?.get(0) == true) userData else null
                     bindProfileView()
                     binding.svEditProfile.visibility = View.GONE
                     binding.svViewProfile.visibility = View.VISIBLE

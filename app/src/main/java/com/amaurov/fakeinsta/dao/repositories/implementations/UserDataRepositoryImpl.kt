@@ -1,6 +1,7 @@
 package com.amaurov.fakeinsta.dao.repositories.implementations
 
 import com.amaurov.fakeinsta.dao.models.UserData
+import com.amaurov.fakeinsta.dao.repositories.Repository
 import com.amaurov.fakeinsta.dao.repositories.interfaces.UserDataRepository
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.utils.DBEntities
@@ -12,37 +13,42 @@ import com.google.firebase.ktx.Firebase
 class UserDataRepositoryImpl (
     private val dbRef: DatabaseReference = Firebase.database.reference,
     private val userDataRef: DatabaseReference = dbRef.child(DBEntities.USERDATA_REF)
-): UserDataRepository {
-    override suspend fun createUserData(userData: UserData, callback: GenericCallback<UserData>) {
+): Repository<UserData> {
+    override suspend fun create(newEntity: UserData, callback: GenericCallback<UserData>) {
         val response = FirebaseResponse<UserData>()
 
-        userDataRef.child(userData.id!!).setValue(userData)
+        userDataRef.child(newEntity.id!!).setValue(newEntity)
             .addOnCompleteListener {
-                response.data = listOf(userData)
+                response.data = listOf(newEntity)
                 callback.onCallback(response)
             }
     }
 
-    override suspend fun getUserDataByKey(key: String, callback: GenericCallback<UserData>) {
+    override suspend fun getAll(): FirebaseResponse<UserData> {
+        //TODO("Not yet implemented")
+        return FirebaseResponse()
+    }
+
+    override suspend fun getById(id: String, callback: GenericCallback<UserData>) {
         val response = FirebaseResponse<UserData>()
 
-        userDataRef.child(key).get()
+        userDataRef.child(id).get()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     var user = it.result.getValue(UserData::class.java)!!
-                    user.id = key
+                    user.id = id
                     response.data = listOf(user)
                     callback.onCallback(response)
                 }
             }
     }
 
-    override suspend fun updateUserData(userData: UserData, callback: GenericCallback<UserData>) {
-        val response = FirebaseResponse<UserData>()
+    override suspend fun update(newValue: UserData, callback: GenericCallback<Boolean>) {
+        val response = FirebaseResponse<Boolean>()
 
-        userDataRef.child(userData.id!!).setValue(userData)
+        userDataRef.child(newValue.id!!).setValue(newValue)
             .addOnCompleteListener {
-                response.data = listOf(userData)
+                response.data = listOf(true)
                 callback.onCallback(response)
             }
     }

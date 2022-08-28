@@ -1,7 +1,7 @@
 package com.amaurov.fakeinsta.dao.repositories.implementations
 
 import com.amaurov.fakeinsta.dao.models.Post
-import com.amaurov.fakeinsta.dao.repositories.interfaces.PostsRepository
+import com.amaurov.fakeinsta.dao.repositories.Repository
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.utils.DBEntities.POSTS_REF
 import com.amaurov.fakeinsta.utils.GenericCallback
@@ -13,10 +13,10 @@ import kotlinx.coroutines.tasks.await
 class PostsRepositoryImpl (
     private val dbRef: DatabaseReference = Firebase.database.reference,
     private val postRef: DatabaseReference = dbRef.child(POSTS_REF)
-): PostsRepository {
-    override suspend fun createPost(post: Post, callback: GenericCallback<Void>) {
+): Repository<Post> {
+    override suspend fun create(newEntity: Post, callback: GenericCallback<Post>) {
         try {
-            postRef.push().setValue(post)
+            postRef.push().setValue(newEntity)
                 .addOnCompleteListener {
                     // Maybe I don't even need a callback
                     callback.onCallback(FirebaseResponse())
@@ -26,7 +26,7 @@ class PostsRepositoryImpl (
         }
     }
 
-    override suspend fun getPosts(): FirebaseResponse<Post> {
+    override suspend fun getAll(): FirebaseResponse<Post> {
         val response = FirebaseResponse<Post>()
         try {
             val posts = mutableListOf<Post>()
@@ -44,23 +44,28 @@ class PostsRepositoryImpl (
         return response
     }
 
-    override suspend fun updatePostLikes(postId: String, userId: String, isLiked:Boolean, callback: GenericCallback<Boolean>) {
-        val likeNode = postRef.child(postId).child("likes").child(userId)
+    override suspend fun getById(id: String, callback: GenericCallback<Post>) {
+        //TODO("Not yet implemented")
+    }
+
+    override suspend fun update(newValue: Post, callback: GenericCallback<Boolean>) {
+        //ToDo("Update post with post, not params")
+        postRef.child(newValue.id!!).setValue(newValue)
         val response = FirebaseResponse<Boolean>()
 
-        if (isLiked) {
-            likeNode.removeValue()
-                .addOnCompleteListener {
-                    response.data = listOf(false)
-                    callback.onCallback(response)
-                }
-        }
-        else {
-            likeNode.setValue(1)
-                .addOnCompleteListener {
-                    response.data = listOf(true)
-                    callback.onCallback(response)
-                }
-        }
+//        if (isLiked) {
+//            likeNode.removeValue()
+//                .addOnCompleteListener {
+//                    response.data = listOf(false)
+//                    callback.onCallback(response)
+//                }
+//        }
+//        else {
+//            likeNode.setValue(1)
+//                .addOnCompleteListener {
+//                    response.data = listOf(true)
+//                    callback.onCallback(response)
+//                }
+//        }
     }
 }

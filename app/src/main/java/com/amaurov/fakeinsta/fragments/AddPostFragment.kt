@@ -95,8 +95,8 @@ class AddPostFragment : Fragment() {
                 timeOfPosting = LocalDateTime.now()
             )
             
-            postVM.createPost(post, object: GenericCallback<Void> {
-                override fun onCallback(response: FirebaseResponse<Void>) {
+            postVM.createPost(post, object: GenericCallback<Post> {
+                override fun onCallback(response: FirebaseResponse<Post>) {
                     Log.i("POST", "Post created!")
                 }
             })

@@ -16,6 +16,9 @@ import com.amaurov.fakeinsta.dao.models.UserData
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.databinding.FragmentProfileBinding
 import com.amaurov.fakeinsta.utils.*
+import com.amaurov.fakeinsta.utils.adapters.StringImageAdapter
+import com.amaurov.fakeinsta.utils.state.AnonymousUserState
+import com.amaurov.fakeinsta.utils.state.AuthStateContext
 import com.amaurov.fakeinsta.viewmodels.UserDataViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,6 +27,7 @@ import com.google.firebase.ktx.Firebase
 class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private val userDataVM = UserDataViewModel()
+    private val authState = AuthStateContext()
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -66,6 +70,7 @@ class ProfileFragment : Fragment() {
         binding.btnProfileLogout.setOnClickListener {
             Auth.currentUser = null
             Firebase.auth.signOut()
+            authState.changeState(AnonymousUserState())
             binding.svViewProfile.visibility = View.GONE
             binding.llNoUserLogged.visibility = View.VISIBLE
         }
@@ -110,14 +115,14 @@ class ProfileFragment : Fragment() {
     }
 
     private fun bindProfileView() {
-        binding.civProfilePicture.setImageBitmap(Auth.currentUser!!.profilePicture!!.toBitmapImage())
+        binding.civProfilePicture.setImageBitmap(StringImageAdapter(Auth.currentUser!!.profilePicture!!).showImage())
         binding.tvUsername.text = Auth.currentUser!!.username
         binding.tvEmail.text = Auth.currentUser!!.email
         binding.tvSubscription.text = Auth.currentUser!!.subscriptionType
     }
 
     private fun bindEditFields() {
-        binding.civProfilePictureEdit.setImageBitmap(Auth.currentUser!!.profilePicture!!.toBitmapImage())
+        binding.civProfilePictureEdit.setImageBitmap(StringImageAdapter(Auth.currentUser!!.profilePicture!!).showImage())
         binding.tfUsername.editText?.setText(Auth.currentUser!!.username)
         binding.btgSubscription.check(
             when (Auth.currentUser!!.subscriptionType) {

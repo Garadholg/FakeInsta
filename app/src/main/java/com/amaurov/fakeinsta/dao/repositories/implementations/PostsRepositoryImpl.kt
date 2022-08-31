@@ -49,23 +49,14 @@ class PostsRepositoryImpl (
     }
 
     override suspend fun update(newValue: Post, callback: GenericCallback<Boolean>) {
-        //ToDo("Update post with post, not params")
-        postRef.child(newValue.id!!).setValue(newValue)
         val response = FirebaseResponse<Boolean>()
-
-//        if (isLiked) {
-//            likeNode.removeValue()
-//                .addOnCompleteListener {
-//                    response.data = listOf(false)
-//                    callback.onCallback(response)
-//                }
-//        }
-//        else {
-//            likeNode.setValue(1)
-//                .addOnCompleteListener {
-//                    response.data = listOf(true)
-//                    callback.onCallback(response)
-//                }
-//        }
+        postRef.child(newValue.id!!).setValue(newValue)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    response.data = listOf(true)
+                    callback.onCallback(response)
+                }
+            }
     }
+
 }

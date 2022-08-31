@@ -86,14 +86,23 @@ class AddPostFragment : Fragment() {
         })
         
         binding.btnCreateNewPost.setOnClickListener { 
-            val post = Post(
-                userId = Auth.currentUser!!.id,
-                userName = Auth.currentUser!!.username,
-                picture = binding.ivNewPostPicture.drawable.toBase64String(),
-                caption = binding.etNewPostCaption.text.toString(),
-                hashtags = getHashtags(),
-                timeOfPosting = LocalDateTime.now()
-            )
+//            val post = Post(
+//                userId = Auth.currentUser!!.id,
+//                userName = Auth.currentUser!!.username,
+//                picture = binding.ivNewPostPicture.drawable.toBase64String(),
+//                caption = binding.etNewPostCaption.text.toString(),
+//                hashtags = getHashtags(),
+//                timeOfPosting = LocalDateTime.now()
+//            )
+
+            val post = Post.Builder()
+                .userId(Auth.currentUser!!.id!!)
+                .userName(Auth.currentUser!!.username!!)
+                .picture(binding.ivNewPostPicture.drawable.toBase64String())
+                .caption(binding.etNewPostCaption.text.toString())
+                .hashtags(getHashtags())
+                .timeOfPosting(LocalDateTime.now())
+                .build()
             
             postVM.createPost(post, object: GenericCallback<Post> {
                 override fun onCallback(response: FirebaseResponse<Post>) {

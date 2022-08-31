@@ -15,14 +15,19 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.dao.models.Post
+import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.databinding.PostItemBinding
 import com.amaurov.fakeinsta.fragments.HomeFragmentDirections
 import com.amaurov.fakeinsta.utils.Auth
-import com.amaurov.fakeinsta.utils.toBitmapImage
+import com.amaurov.fakeinsta.utils.GenericCallback
+import com.amaurov.fakeinsta.utils.adapters.StringImageAdapter
+import com.amaurov.fakeinsta.utils.state.AuthStateContext
 
 class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.ViewHolder>() {
     private var _binding: PostItemBinding? = null
     private val binding get() = _binding!!
+
+    private val authState = AuthStateContext()
 
     private var postList: List<Post> = emptyList()
     //TODO("Testing like event shenanigans, delete later)
@@ -49,7 +54,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
 
     inner class ViewHolder(private val context : Context, private val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
-            binding.ivPicture.setImageBitmap(post.picture!!.toBitmapImage())
+            binding.ivPicture.setImageBitmap(StringImageAdapter(post.picture!!).showImage())
 
             //binding.civPostUserPicture.setImageBitmap()
             binding.tvUsername.text = post.userName
@@ -62,7 +67,18 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
             else binding.ivLiked.setImageResource(R.drawable.heart_outline)
 
             binding.ivLiked.setOnClickListener {
-                onLikePressed(post)
+                authState.likePost(post, context, object: GenericCallback<Boolean> {
+                    override fun onCallback(response: FirebaseResponse<Boolean>) {
+                        notifyDataSetChanged()
+//                        if (post.likes.contains(Auth.currentUser?.id))
+//                            binding.ivLiked.setImageResource(R.drawable.heart)
+//                        else binding.ivLiked.setImageResource(R.drawable.heart_outline)
+                    }
+                })
+            }
+
+            binding.ivComment.setOnClickListener {
+                authState.commentPost(post, context)
             }
         }
 
@@ -101,18 +117,6 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
         private fun onHashtagClickedEvent(tv : TextView) {
             val action = HomeFragmentDirections.actionHomeToHashtagPostResults(tv.text.toString())
             tv.findNavController().navigate(action)
-        }
-
-        private fun onLikePressed(post: Post) {
-            likeEvent(post, post.likes.contains(Auth.currentUser!!.id))
-
-            if (post.likes.contains(Auth.currentUser!!.id)) {
-                post.likes.remove(Auth.currentUser!!.id!!)
-            } else {
-                post.likes[Auth.currentUser!!.id!!] = 1
-            }
-
-            notifyDataSetChanged()
         }
     }
 }

@@ -67,6 +67,7 @@
             android:contentDescription="Heart icon" />
 
         <ImageView
+            android:id="@+id/ivComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="30dp"

@@ -6,14 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.adapters.PostsRecyclerViewAdapter
-import com.amaurov.fakeinsta.dao.models.Post
-import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
-import com.amaurov.fakeinsta.utils.GenericCallback
 import com.amaurov.fakeinsta.databinding.FragmentHomeBinding
-import com.amaurov.fakeinsta.utils.Auth
 import com.amaurov.fakeinsta.viewmodels.PostViewModel
 
 class HomeFragment : Fragment() {
@@ -34,7 +32,8 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this).get(PostViewModel::class.java)
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[PostViewModel::class.java]
         getData()
         bindRepeater()
     }
@@ -43,7 +42,6 @@ class HomeFragment : Fragment() {
         rvPosts = binding.rvPosts
         rvPosts.layoutManager = LinearLayoutManager(this.context)
         rvAdapter = PostsRecyclerViewAdapter()
-        rvAdapter.likeEvent = onPostLiked
         rvPosts.adapter = rvAdapter
     }
 
@@ -54,19 +52,10 @@ class HomeFragment : Fragment() {
 
     // Observer
     private fun getData() {
-        viewModel.responseLiveData.observe(viewLifecycleOwner) {
+        viewModel.getAllPosts.observe(viewLifecycleOwner) {
             it.data?.let { posts ->
                 rvAdapter.updatePosts(posts)
             }
         }
-    }
-
-    private val onPostLiked : (post: Post, isLiked: Boolean) -> Unit = { post: Post, isLiked: Boolean ->
-        viewModel.updateLikes(post.id!!, Auth.currentUser?.id!!, isLiked, object: GenericCallback<Boolean> {
-            override fun onCallback(response: FirebaseResponse<Boolean>) {
-                //ToDo("Maybe I don't even need a callback...")
-            }
-
-        })
     }
 }

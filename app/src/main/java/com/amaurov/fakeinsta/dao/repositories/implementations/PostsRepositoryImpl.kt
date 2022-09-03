@@ -1,6 +1,7 @@
 package com.amaurov.fakeinsta.dao.repositories.implementations
 
 import com.amaurov.fakeinsta.dao.models.Post
+import com.amaurov.fakeinsta.dao.models.UserData
 import com.amaurov.fakeinsta.dao.repositories.Repository
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.utils.DBEntities.POSTS_REF
@@ -44,8 +45,37 @@ class PostsRepositoryImpl (
         return response
     }
 
+    override suspend fun getByQuery(query: String): FirebaseResponse<Post> {
+        val response = FirebaseResponse<Post>()
+        try {
+            val posts = mutableListOf<Post>()
+
+            postRef.get().await().children.forEach {
+                val post = it.getValue(Post::class.java)!!
+                post.id = it.key
+
+                if (post.userName == query || post.hashtags.containsKey(query))
+                    posts.add(post)
+            }
+
+            response.data = posts.reversed()
+        } catch (exception: Exception) {
+            response.exception = exception
+        }
+        return response
+    }
+
     override suspend fun getById(id: String, callback: GenericCallback<Post>) {
-        //TODO("Not yet implemented")
+        val response = FirebaseResponse<Post>()
+        postRef.child(id).get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    var post = it.result.getValue(Post::class.java)!!
+                    post.id = id
+                    response.data = listOf(post)
+                    callback.onCallback(response)
+                }
+        }
     }
 
     override suspend fun update(newValue: Post, callback: GenericCallback<Boolean>) {

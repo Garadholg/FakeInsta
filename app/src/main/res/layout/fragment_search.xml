@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.SearchFragment">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etSearchKeyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Search by username or hashtag" />
+
+        <ImageButton
+            android:id="@+id/btnSearchPosts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/soft_blue"
+            android:src="@drawable/ic_baseline_search_24"/>
+
+    </LinearLayout>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Search fragment" />
+        android:layout_marginTop="10dp">
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchedPosts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+</LinearLayout>

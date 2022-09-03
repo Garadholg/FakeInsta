@@ -1,6 +1,7 @@
 package com.amaurov.fakeinsta.dao.models
 
 import com.google.firebase.database.Exclude
+import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 data class Post(

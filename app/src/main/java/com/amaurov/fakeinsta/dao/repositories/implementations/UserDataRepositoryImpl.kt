@@ -2,7 +2,6 @@ package com.amaurov.fakeinsta.dao.repositories.implementations
 
 import com.amaurov.fakeinsta.dao.models.UserData
 import com.amaurov.fakeinsta.dao.repositories.Repository
-import com.amaurov.fakeinsta.dao.repositories.interfaces.UserDataRepository
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
 import com.amaurov.fakeinsta.utils.DBEntities
 import com.amaurov.fakeinsta.utils.GenericCallback
@@ -25,6 +24,11 @@ class UserDataRepositoryImpl (
     }
 
     override suspend fun getAll(): FirebaseResponse<UserData> {
+        //TODO("Not yet implemented")
+        return FirebaseResponse()
+    }
+
+    override suspend fun getByQuery(query: String): FirebaseResponse<UserData> {
         //TODO("Not yet implemented")
         return FirebaseResponse()
     }

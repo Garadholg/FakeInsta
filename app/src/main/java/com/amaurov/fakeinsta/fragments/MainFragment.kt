@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.amaurov.fakeinsta.MainActivity
 import com.amaurov.fakeinsta.R

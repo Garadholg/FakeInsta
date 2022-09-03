@@ -18,7 +18,11 @@
         android:id="@+id/searchFragment"
         android:name="com.amaurov.fakeinsta.fragments.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/actionSearchToPostDetails"
+            app:destination="@id/postDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.amaurov.fakeinsta.fragments.ProfileFragment"
@@ -38,4 +42,13 @@
         android:name="com.amaurov.fakeinsta.fragments.AddPostFragment"
         android:label="fragment_add_post"
         tools:layout="@layout/fragment_add_post" />
+    <fragment
+        android:id="@+id/postDetailsFragment"
+        android:name="com.amaurov.fakeinsta.fragments.PostDetailsFragment"
+        android:label="fragment_post_details"
+        tools:layout="@layout/fragment_post_details" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </fragment>
 </navigation>

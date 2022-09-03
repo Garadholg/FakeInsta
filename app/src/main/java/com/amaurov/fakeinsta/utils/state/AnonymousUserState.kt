@@ -11,7 +11,7 @@ class AnonymousUserState: AuthState {
         val dialog = AlertDialog.Builder(context)
         dialog.apply {
             setPositiveButton("Ok"
-            ) { dialog, id ->
+            ) { _, _ ->
                 Log.i("STATE_TAG", "Cannot like cause not logged in")
             }
         }
@@ -24,7 +24,7 @@ class AnonymousUserState: AuthState {
         val dialog = AlertDialog.Builder(context)
         dialog.apply {
             setPositiveButton("Ok"
-            ) { dialog, id ->
+            ) { _, _ ->
                 Log.i("STATE_TAG", "Cannot like cause not logged in")
             }
         }

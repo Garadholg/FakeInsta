@@ -30,8 +30,6 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
     private val authState = AuthStateContext()
 
     private var postList: List<Post> = emptyList()
-    //TODO("Testing like event shenanigans, delete later)
-    var likeEvent: (post: Post, isLiked: Boolean) -> Unit? = { _: Post, _: Boolean -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -56,7 +54,6 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
         fun bind(post: Post) {
             binding.ivPicture.setImageBitmap(StringImageAdapter(post.picture!!).showImage())
 
-            //binding.civPostUserPicture.setImageBitmap()
             binding.tvUsername.text = post.userName
             binding.tvCaption.text = createCaptionText(post.userName, post.caption)
 
@@ -70,9 +67,6 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<PostsRecyclerViewAdapter.V
                 authState.likePost(post, context, object: GenericCallback<Boolean> {
                     override fun onCallback(response: FirebaseResponse<Boolean>) {
                         notifyDataSetChanged()
-//                        if (post.likes.contains(Auth.currentUser?.id))
-//                            binding.ivLiked.setImageResource(R.drawable.heart)
-//                        else binding.ivLiked.setImageResource(R.drawable.heart_outline)
                     }
                 })
             }

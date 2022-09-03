@@ -38,7 +38,6 @@ class AddPostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupListeners()
     }
 
@@ -85,16 +84,7 @@ class AddPostFragment : Fragment() {
             false
         })
         
-        binding.btnCreateNewPost.setOnClickListener { 
-//            val post = Post(
-//                userId = Auth.currentUser!!.id,
-//                userName = Auth.currentUser!!.username,
-//                picture = binding.ivNewPostPicture.drawable.toBase64String(),
-//                caption = binding.etNewPostCaption.text.toString(),
-//                hashtags = getHashtags(),
-//                timeOfPosting = LocalDateTime.now()
-//            )
-
+        binding.btnCreateNewPost.setOnClickListener {
             val post = Post.Builder()
                 .userId(Auth.currentUser!!.id!!)
                 .userName(Auth.currentUser!!.username!!)
@@ -106,6 +96,7 @@ class AddPostFragment : Fragment() {
             
             postVM.createPost(post, object: GenericCallback<Post> {
                 override fun onCallback(response: FirebaseResponse<Post>) {
+                    //ToDO("Shouldnt I go back to home or something? XD")
                     Log.i("POST", "Post created!")
                 }
             })

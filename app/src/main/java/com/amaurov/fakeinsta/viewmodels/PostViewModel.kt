@@ -28,4 +28,8 @@ class PostViewModel : ViewModel() {
     fun createPost(post: Post, callback: GenericCallback<Post>) = runBlocking {
         repository.create(post, callback)
     }
+
+    fun updatePost(post: Post, callback: GenericCallback<Boolean>) = runBlocking {
+        repository.update(post, callback)
+    }
 }

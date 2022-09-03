@@ -6,17 +6,16 @@ import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -69,13 +68,19 @@ class PostDetailsFragment : Fragment() {
                 fos.flush()
                 fos.close()
             } catch (e: Exception) {
-                val msg = e.message
+                //val msg = e.message
             }
+        }
+
+        binding.btnEditPost.setOnClickListener {
+            val action = PostDetailsFragmentDirections.actionPostDetailsToEditPost(selectedPost.id!!)
+            it.findNavController().navigate(action)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        view?.findNavController()?.popBackStack(R.id.searchFragment, false)
         _binding = null
     }
 

@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -67,6 +68,7 @@ class PostDetailsFragment : Fragment() {
                 bitmapImg.compress(Bitmap.CompressFormat.PNG, 100, fos)
                 fos.flush()
                 fos.close()
+                Toast.makeText(this.context, "Picture downloaded", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 //val msg = e.message
             }

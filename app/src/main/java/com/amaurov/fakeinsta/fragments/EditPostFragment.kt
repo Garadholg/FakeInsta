@@ -94,18 +94,19 @@ class EditPostFragment : Fragment() {
 
         binding.btnUpdatePost.setOnClickListener {
             val post = Post.Builder()
+                .id(editPost.id!!)
                 .userId(Auth.currentUser!!.id!!)
                 .userName(Auth.currentUser!!.username!!)
                 .picture(binding.ivEditPostPicture.drawable.toBase64String())
                 .caption(binding.etEditPostCaption.text.toString())
                 .hashtags(getHashtags())
-                .timeOfPosting(LocalDateTime.now())
                 .build()
 
             postVM.updatePost(post, object: GenericCallback<Boolean> {
                 override fun onCallback(response: FirebaseResponse<Boolean>) {
-                    //ToDO("Shouldnt I go back to post details or something? XD")
-                    Log.i("POST", "Post created!")
+                    if (response.data?.get(0) == true) {
+                        view?.findNavController()?.popBackStack(R.id.postDetailsFragment, false)
+                    }
                 }
             })
         }

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
@@ -20,9 +21,13 @@ import com.amaurov.fakeinsta.utils.Auth
 import com.amaurov.fakeinsta.utils.GenericCallback
 import com.amaurov.fakeinsta.utils.toBase64String
 import com.amaurov.fakeinsta.viewmodels.PostViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
 
 class AddPostFragment : Fragment() {
+    private lateinit var auth: FirebaseAuth
     private val postVM = PostViewModel()
     
     private var _binding: FragmentAddPostBinding? = null
@@ -38,6 +43,16 @@ class AddPostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        auth = Firebase.auth
+        if (auth.currentUser != null && Auth.currentUser != null) {
+            binding.llNoUserLogged.visibility = View.GONE
+            binding.llAddPost.visibility = View.VISIBLE
+        } else {
+            binding.llAddPost.visibility = View.GONE
+            binding.llNoUserLogged.visibility = View.VISIBLE
+        }
+
         setupListeners()
     }
 
@@ -91,12 +106,11 @@ class AddPostFragment : Fragment() {
                 .picture(binding.ivNewPostPicture.drawable.toBase64String())
                 .caption(binding.etNewPostCaption.text.toString())
                 .hashtags(getHashtags())
-                .timeOfPosting(LocalDateTime.now())
                 .build()
             
             postVM.createPost(post, object: GenericCallback<Post> {
                 override fun onCallback(response: FirebaseResponse<Post>) {
-                    //ToDO("Shouldnt I go back to home or something? XD")
+                    view?.findNavController()?.navigate(R.id.homeFragment)
                     Log.i("POST", "Post created!")
                 }
             })

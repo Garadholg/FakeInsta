@@ -1,9 +1,11 @@
 package com.amaurov.fakeinsta.dao.models
 
+import com.amaurov.fakeinsta.utils.annotations.FirebaseEntity
 import com.google.firebase.database.Exclude
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
+@FirebaseEntity
 data class Post(
     @get:Exclude
     var id: String? = null,

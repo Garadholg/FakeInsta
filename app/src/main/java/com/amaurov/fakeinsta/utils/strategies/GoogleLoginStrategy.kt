@@ -6,12 +6,14 @@ import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.fragment.app.FragmentActivity
+import com.amaurov.fakeinsta.utils.annotations.Strategy
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.tasks.Task
 
+@Strategy
 class GoogleLoginStrategy(
     override var activity: FragmentActivity,
     private val googleSignInResultHandler: ActivityResultLauncher<IntentSenderRequest>

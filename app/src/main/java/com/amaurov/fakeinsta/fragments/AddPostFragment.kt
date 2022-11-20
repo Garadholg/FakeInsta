@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.amaurov.fakeinsta.R
 import com.amaurov.fakeinsta.dao.models.Post
 import com.amaurov.fakeinsta.dao.responses.FirebaseResponse
@@ -57,6 +58,10 @@ class AddPostFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        binding.btnProfileLogin.setOnClickListener {
+            requireParentFragment().requireParentFragment().findNavController().navigate(R.id.action_main_to_signIn)
+        }
+
         binding.ivNewPostPicture.setOnClickListener {
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             galleryImagePickedResult.launch(galleryIntent)

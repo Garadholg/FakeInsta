@@ -23,7 +23,7 @@ class PostsRepositoryImpl (
                     callback.onCallback(FirebaseResponse())
                 }
         } catch (exception: Exception) {
-            val msg = exception.message
+
         }
     }
 
